@@ -44,6 +44,48 @@ The bot sends a trade invitation to initiate a session:
         "code": "<INVITATION_CODE>",
         "version": 21
     }
+    ```
+
+### 3. Monitoring User Responses
+The bot listens for user responses to the trade invitation:
+- **Endpoint**: `https://firestore.googleapis.com/v1/projects/smoqgames25-simulation/databases/(default)/documents/TResp3/<RESPONSE_KEY>`
+- **Method**: `GET`
+- **Purpose**: Checks if a user has accepted the trade invitation.
+- **Retry Mechanism**: Implements exponential backoff for retries, checking periodically for updates.
+If the user accepts, the bot retrieves the trade ID and the opponent's UID for the next steps.
+
+### 4. Fetching Wishlist
+The bot retrieves the opponent's wishlist to customize trade proposals:
+- **Endpoint**: `https://firestore.googleapis.com/v1/projects/smoqgames25-simulation/databases/(default)/documents/Trade3/<TRADE_ID>`
+- **Method**: `GET`
+- **Purpose**: Fetches wishlist data to determine which cards the opponent is interested in.
+If no wishlist is found, the bot uses a default list of cards to propose a trade.
+
+### 5. Proposing a Trade
+Once the wishlist is retrieved, the bot sends a trade proposal:
+- **Endpoint**: `https://firestore.googleapis.com/v1/projects/smoqgames25-simulation/databases/(default)/documents/Trade3/<TRADE_ID>/<PATH>`
+- **Method**: `PATCH`
+- **Purpose**: Sends card offers and proposals based on the opponent's wishlist.
+- **Payload Example**:
+```json
+{
+    "fields": {
+        "m": {
+            "arrayValue": {
+                "values": [
+                    {"integerValue": "80"},  // Message Type
+                    {"integerValue": "0"}, 
+                    {"integerValue": "100000"},
+                    {"integerValue": "0"},
+                    {"integerValue": "<CARD_ID_1>"},
+                    {"integerValue": "1"},
+                    {"integerValue": "<CARD_ID_2>"},
+                    {"integerValue": "1952"}
+                ]
+            }
+        },
+        "timestamp": {"timestampValue": "<ISO_TIMESTAMP>"}
+    }
 }
 ```
 
