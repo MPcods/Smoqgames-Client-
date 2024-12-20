@@ -89,3 +89,28 @@ Once the wishlist is retrieved, the bot sends a trade proposal:
 }
 ```
 
+### 6. Confirming and Finalizing the Trade
+After a proposal is accepted, the bot confirms and finalizes the trade:
+- **Endpoint**: `https://europe-west2-smoqgames25-simulation.cloudfunctions.net/confirmAndCheckTrade`
+- **Method**: `POST`
+- **Purpose**: Confirms the trade with the agreed terms and checks the final result.
+- **Payload Example**:
+```json
+{
+    "data": {
+        "tradeId": "<TRADE_ID>",
+        "cardGuids": ["<GUID_1>", "<GUID_2>", "<GUID_3>"],
+        "coins": {
+            "@type": "type.googleapis.com/google.protobuf.Int64Value",
+            "value": 101526
+        },
+        "name": "Bot",
+        "diff": {
+            "@type": "type.googleapis.com/google.protobuf.Int64Value",
+            "value": 100000
+        }
+    }
+}
+```
+
+
